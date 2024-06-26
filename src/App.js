@@ -39,7 +39,7 @@ export default function App() {
         getWeather(location);
       }
     },
-    [location]
+    [location, setWeather]
   );
 
   return (
@@ -54,18 +54,47 @@ export default function App() {
           }}
         ></input>
       </div>
-      <div className="output">
-        <h2>Weather {displayLocation}</h2>
-        <ul className="weather">
-          <li className="day">
-            <span>☁️</span>
-            <p>Today</p>
-            <p>
-              27-<strong>31</strong>
-            </p>
-          </li>
-        </ul>
-      </div>
+      {weather.weathercode && (
+        <Weather displayLocation={displayLocation} weather={weather} />
+      )}
     </div>
+  );
+}
+
+function Weather({ displayLocation, weather }) {
+  const {
+    temperature_2m_max: max,
+    temperature_2m_min: min,
+    time: dates,
+    weathercode: codes,
+  } = weather;
+  return (
+    <div className="output">
+      <h2>Weather {displayLocation}</h2>
+      <ul className="weather">
+        {dates.map((date, i) => (
+          <Day
+            date={date}
+            max={max[i]}
+            min={min[i]}
+            code={codes[i]}
+            isToday={i === 0}
+            key={date}
+          />
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function Day({ date, max, min, code, isToday }) {
+  return (
+    <li className="day">
+      <span>☁️</span>
+      <p>{isToday ? "Today" : date}</p>
+      <p>
+        {Math.floor(min)}&deg; &mdash; <strong>{Math.ceil(max)}&deg;</strong>
+      </p>
+    </li>
   );
 }
