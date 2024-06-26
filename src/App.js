@@ -36,11 +36,13 @@ export default function App() {
   const [location, setLocation] = useState("");
   const [weather, setWeather] = useState({});
   const [displayLocation, setDisplayLocation] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(
     function () {
       async function getWeather(location) {
         try {
+          setIsLoading(true);
           const geoRes = await fetch(
             `https://geocoding-api.open-meteo.com/v1/search?name=${location}`
           );
@@ -62,11 +64,14 @@ export default function App() {
           setWeather((w) => weatherData.daily);
           console.log(weatherData);
         } catch (err) {
+          setWeather({});
           console.error(err);
+        } finally {
+          setIsLoading(false);
         }
       }
 
-      if (location.length >= 2) {
+      if (location) {
         getWeather(location);
       }
     },
@@ -85,6 +90,7 @@ export default function App() {
           }}
         ></input>
       </div>
+      {isLoading && <p className="loader">Loading...</p>}
       {weather.weathercode && (
         <Weather displayLocation={displayLocation} weather={weather} />
       )}
