@@ -3,6 +3,8 @@ import { useState } from "react";
 
 export default function App() {
   const [location, setLocation] = useState("");
+  const [weather, setWeather] = useState({});
+  const [displayLocation, setDisplayLocation] = useState("");
 
   useEffect(
     function () {
@@ -16,8 +18,18 @@ export default function App() {
 
           if (!geoData.results) throw new Error("Location not found");
 
-          const { longitude, latitudecountry_code, timezone, name } =
+          const { longitude, latitude, country_code, timezone, name } =
             geoData.results[0];
+
+          setDisplayLocation((l) => `${name}`);
+
+          const weatherRes = await fetch(
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&timezone=${timezone}&daily=weathercode,temperature_2m_max,temperature_2m_min`
+          );
+
+          const weatherData = await weatherRes.json();
+          setWeather((w) => weatherData.daily);
+          console.log(weatherData);
         } catch (err) {
           console.error(err);
         }
@@ -43,43 +55,8 @@ export default function App() {
         ></input>
       </div>
       <div className="output">
-        <h2>Weather Placename</h2>
+        <h2>Weather {displayLocation}</h2>
         <ul className="weather">
-          <li className="day">
-            <span>☁️</span>
-            <p>Today</p>
-            <p>
-              27-<strong>31</strong>
-            </p>
-          </li>
-          <li className="day">
-            <span>☁️</span>
-            <p>Today</p>
-            <p>
-              27-<strong>31</strong>
-            </p>
-          </li>
-          <li className="day">
-            <span>☁️</span>
-            <p>Today</p>
-            <p>
-              27-<strong>31</strong>
-            </p>
-          </li>
-          <li className="day">
-            <span>☁️</span>
-            <p>Today</p>
-            <p>
-              27-<strong>31</strong>
-            </p>
-          </li>
-          <li className="day">
-            <span>☁️</span>
-            <p>Today</p>
-            <p>
-              27-<strong>31</strong>
-            </p>
-          </li>
           <li className="day">
             <span>☁️</span>
             <p>Today</p>
