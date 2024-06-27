@@ -82,19 +82,25 @@ export default function App() {
     <div className="app">
       <h1>Classy Weather</h1>
       <div>
-        <input
-          type="text"
-          value={location}
-          onChange={(e) => {
-            setLocation((s) => e.target.value);
-          }}
-        ></input>
+        <Input location={location} setLocation={setLocation} />
       </div>
       {isLoading && <p className="loader">Loading...</p>}
       {weather.weathercode && (
         <Weather displayLocation={displayLocation} weather={weather} />
       )}
     </div>
+  );
+}
+
+function Input({ location, setLocation }) {
+  return (
+    <input
+      type="text"
+      value={location}
+      onChange={(e) => {
+        setLocation((s) => e.target.value);
+      }}
+    ></input>
   );
 }
 
